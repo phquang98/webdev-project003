@@ -3,6 +3,8 @@ import morgan from "morgan";
 import cors from "cors";
 import express from "express";
 
+import { xConfig } from "./config";
+
 // --- Config + Initiate server ---
 dotenv.config(); // read key-value pairs from .env
 const port = process.env.PORT_NUMBER_HERE || 3000; //
@@ -28,8 +30,10 @@ app.post("/healthcheck", (req, res, _next) => {
   }
 });
 
+// --- Ini server ---
+xConfig.cxnPostgresDB();
+
+// --- Start server ---
 app.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });
-
-// check git hooks
