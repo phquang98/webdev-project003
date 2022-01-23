@@ -4,6 +4,7 @@ import cors from "cors";
 import express from "express";
 
 import { xConfig } from "./config";
+import { studentRouter } from "./route/student.route";
 
 // --- Config + Initiate server ---
 dotenv.config(); // read key-value pairs from .env
@@ -32,6 +33,7 @@ app.post("/healthcheck", (req, res, _next) => {
 
 // --- Ini server ---
 xConfig.cxnPostgresDB();
+app.use("/student", studentRouter);
 
 // --- Start server ---
 app.listen(port, () => {
