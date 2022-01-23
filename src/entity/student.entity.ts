@@ -1,25 +1,14 @@
-// import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import { User } from "./user.entity";
 
-// @Entity("student")
-// export class Student extends BaseEntity {
-//   @PrimaryGeneratedColumn()
-//   id: number;
+@Entity("student")
+export class Student extends User {
+  @Column()
+  studyYear: number;
 
-//   @Column({
-//     unique: true
-//   })
-//   iban: string;
+  @Column()
+  academicYear: string;
 
-//   @Column({ default: "EZBKXXXX" })
-//   swift_bic: string;
-
-//   @CreateDateColumn()
-//   createdTS: Date;
-
-//   // TODO: never negative ?
-//   @Column()
-//   balance: number;
-
-//   @Column()
-//   customerId: string;
-// }
+  @Column()
+  programme: string;
+}
