@@ -7,16 +7,16 @@ import { xConfig } from "./config";
 import { studentRouter } from "./route/student.route";
 
 // --- Config + Initiate server ---
-dotenv.config(); // read key-value pairs from .env
+dotenv.config();
 const port = process.env.PORT_NUMBER_HERE || 3000; //
 
-const app = express(); // create an express app server
+const app = express();
 
 // --- Top Lv Middlewares ---
-app.use(express.json()); // TLDR can send json data from FE to endpoints
-app.use(express.urlencoded({ extended: true })); // if use Form submit, data from form will be written to req.body
-app.use(morgan(":method :url :status :res[content-length] - :response-time ms")); // TLDR logger
-app.use(cors()); // TLDR allow dif origin to HTTP to this server
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
+app.use(cors());
 
 // --- Run server ---
 app.get("/healthcheck", (req, res, _next) => {

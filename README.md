@@ -1,7 +1,7 @@
-# Template Backend Pure
+# Webdev Project 003
 
-Last updated: 30/12/2021
-Tech: TS + Express
+Last updated: 02/02/2022  
+Tech: TS + Express + TypeORM + PostgreSQL
 
 ## Run
 
@@ -17,17 +17,11 @@ Tech: TS + Express
 - [ ] recheck logic code in controller (should createCtrl use save or create, ...)
   - [ ] raw SQL should be insert, update and delete ? should i spam save everywhere ?
 
-## Test Data
+## Notes
 
-Student:
-{
-"id": "A001",
-"name": "John Doe",
-"age": 26,
-"gender": "male",
-"email": "johndoe@gmail.com",
-"pnum": "0675222385",
-"studyYear": 4,
-"academicYear": "2016-2020",
-"programme": "IT"
-}
+- `x` to denote my own custom code, aka not from any libs
+
+## Simple API Checking
+
+- import the `postman_collection` to Postman
+- run the collection, check Save Responses
