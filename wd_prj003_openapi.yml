@@ -1,0 +1,223 @@
+openapi: 3.0.1
+info:
+  title: Schedule System
+  description: "Testing how to write OpenAPI."
+  version: 4.2.0
+servers:
+  - url: http://localhost:4000
+# --- Entity's names ---
+tags:
+  - name: student
+    description: User that will participate in courses as attendees.
+  - name: teacher
+    description: User that will handle the teaching of courses.
+# --- Routes/Endpoints ---
+paths:
+  /student:
+    get:
+      tags:
+        - student
+      summary: GET ALL
+      operationId: student1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Got All"
+                  affectedResource:
+                    type: string
+                    example: "Student"
+                  responseData:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Student"
+    post:
+      tags:
+        - student
+      summary: POST ONE
+      operationId: student3
+      requestBody:
+        description: The data payload used to create the new resource.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: "#/components/schemas/Student"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Post One"
+                  affectedResource:
+                    type: string
+                    example: "Student"
+                  responseData:
+                    $ref: "#/components/schemas/Student"
+  /student/{studentIDHere}:
+    get:
+      tags:
+        - student
+      summary: GET ONE
+      operationId: student2
+      parameters:
+        - name: studentIDHere
+          in: path
+          description: The ID code of the student.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Got One"
+                  affectedResource:
+                    type: string
+                    example: "Student"
+                  responseData:
+                    $ref: "#/components/schemas/Student"
+    put:
+      tags:
+        - student
+      summary: PUT ONE
+      operationId: student4
+      parameters:
+        - name: studentIDHere
+          in: path
+          description: The ID code of the student.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The data payload used to create the new resource.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: "#/components/schemas/Student"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Put One"
+                  affectedResource:
+                    type: string
+                    example: "Student"
+                  responseData:
+                    $ref: "#/components/schemas/Student"
+    delete:
+      tags:
+        - student
+      summary: DELETE ONE
+      operationId: student5
+      parameters:
+        - name: studentIDHere
+          in: path
+          description: The ID code of the student.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Deleted"
+                  affectedResource:
+                    type: string
+                    example: "Student"
+                  responseData:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Theresa Leningrad"
+                      age:
+                        type: integer
+                        example: 23
+                      gender:
+                        type: string
+                        example: "male"
+                      email:
+                        type: string
+                        example: "Blair_Davis25@example.net"
+                      pnum:
+                        type: string
+                        example: "323-275-4304"
+                      studyYear:
+                        type: integer
+                        example: 1
+                      academicYear:
+                        type: string
+                        example: "2016-2020"
+                      programme:
+                        type: string
+                        example: "Engineer"
+# --- Entities/Schemas ---
+components:
+  schemas:
+    Student:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "61e89017-5798-48d3-8284-791fbd2013f8"
+        name:
+          type: string
+          example: "John Doe"
+        age:
+          type: integer
+          example: 20
+        gender:
+          type: string
+          example: "male"
+        email:
+          type: string
+          example: "Fletcher43@example.com"
+        pnum:
+          type: string
+          example: "551-933-6883"
+        studyYear:
+          type: integer
+          example: 1
+        academicYear:
+          type: string
+          example: "2016-2020"
+        programme:
+          type: string
+          example: "Developer"
+    Teacher:
+      type: object

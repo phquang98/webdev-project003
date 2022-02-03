@@ -1,5 +1,5 @@
-import { RequestHandler, Request } from "express";
-import { getRepository, QueryFailedError } from "typeorm";
+import { RequestHandler } from "express";
+import { getRepository } from "typeorm";
 
 import { Student } from "../entity/student.entity";
 import { xLocals, xReqBody, xReqParams, xReqQuery, xResBody } from "../utils";
@@ -87,7 +87,7 @@ export const updateResource: RequestHandler<xReqParams, xResBody, xReqBody, xReq
   }
 };
 
-// NOTE: when remove, what returns will miss id prop
+// NOTE: what remove() returns will miss id prop
 export const deleteResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
   req,
   res,
