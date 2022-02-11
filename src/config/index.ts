@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { createConnection, ConnectionOptions } from "typeorm";
+import { Course } from "../entity/course.entity";
 
 import { Student } from "../entity/student.entity";
 
@@ -22,7 +23,7 @@ const TYPEORM_POSTGRES_CONF: ConnectionOptions = {
   username: process.env.DB_USERNAME ?? "postgres",
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Student],
+  entities: [Student, Course],
   synchronize: true,
   logging: true
 };

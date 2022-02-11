@@ -5,6 +5,7 @@ import express from "express";
 
 import { xConfig } from "./config";
 import { studentRouter } from "./route/student.route";
+import { courseRouter } from "./route/course.route";
 
 // --- Config + Initiate server ---
 dotenv.config();
@@ -34,6 +35,7 @@ app.post("/healthcheck", (req, res, _next) => {
 // --- Ini server ---
 xConfig.cxnPostgresDB();
 app.use("/student", studentRouter);
+app.use("/course", courseRouter);
 
 // --- Start server ---
 app.listen(port, () => {

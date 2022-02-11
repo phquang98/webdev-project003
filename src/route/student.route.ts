@@ -2,7 +2,7 @@ import express from "express";
 import {
   createResource,
   getAllResource,
-  getResource,
+  getOneResource,
   updateResource,
   deleteResource
 } from "../controller/student.controller";
@@ -10,7 +10,7 @@ import {
 const studentRouter = express.Router();
 
 studentRouter.get("/", getAllResource);
-studentRouter.get("/:studentIDHere", getResource);
+studentRouter.get("/:studentIDHere", getOneResource);
 studentRouter.post("/", createResource);
 studentRouter.put("/:studentIDHere", updateResource);
 studentRouter.delete("/:studentIDHere", deleteResource);

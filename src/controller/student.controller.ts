@@ -4,7 +4,7 @@ import { getRepository } from "typeorm";
 import { Student } from "../entity/student.entity";
 import { xLocals, xReqBody, xReqParams, xReqQuery, xResBody } from "../utils";
 
-export const getResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
+export const getOneResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
   req,
   res,
   _next
