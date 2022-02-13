@@ -26,7 +26,6 @@ export const getOneResource: RequestHandler<newReqParams, xResBody, xReqBody, xR
   }
 };
 
-// TODO: test table empty
 export const getAllResource: RequestHandler<newReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
   req,
   res,
@@ -34,11 +33,9 @@ export const getAllResource: RequestHandler<newReqParams, xResBody, xReqBody, xR
 ) => {
   try {
     const queryResult = await getRepository(Course).find();
-    return queryResult
-      ? res.status(200).json({ msg: "Got all", affectedResource: "Course", responseData: queryResult })
-      : res.status(400).json({ msg: "Failed to get all 1: table empty", affectedResource: "Course" });
+    return res.status(200).json({ msg: "Got all", affectedResource: "Course", responseData: queryResult });
   } catch (error) {
-    return res.status(400).json({ msg: "Failed to get all 2: bad req", affectedResource: "Course" });
+    return res.status(400).json({ msg: "Failed to get all 1: bad req", affectedResource: "Course" });
   }
 };
 

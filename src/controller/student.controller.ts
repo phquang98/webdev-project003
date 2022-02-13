@@ -2,44 +2,70 @@ import { RequestHandler } from "express";
 import { getRepository } from "typeorm";
 
 import { Student } from "../entity/student.entity";
-import { xLocals, xReqBody, xReqParams, xReqQuery, xResBody } from "../utils";
+import { xLocals, xReqBody, newReqParams, xReqQuery, xResBody } from "../utils";
 
-export const getOneResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
+export const getOneResource: RequestHandler<newReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
   req,
   res,
   _next
 ) => {
-  const { studentIDHere } = req.params;
-
   try {
-    // TypeORM advises checking for null & undef
-    if (studentIDHere) {
-      const suspect = await getRepository(Student).findOne({ id: studentIDHere });
-      return suspect
-        ? res.status(200).json({ msg: "Got", affectedResource: "Student", responseData: suspect })
-        : res.status(404).json({ msg: "Failed to get 1: not found", affectedResource: "Student" });
-    } else {
-      return res.status(400).json({ msg: "Failed to get 2: params missing or malformed", affectedResource: "Student" });
+    if ("studentIDHere" in req.params) {
+      const { studentIDHere } = req.params;
+      const suspect = await getRepository(Student).findOne(studentIDHere);
+      if (suspect) {
+        return res.status(200).json({ msg: "Got one", affectedResource: "Student", responseData: suspect });
+      } else {
+        return res
+          .status(404)
+          .json({ msg: "Failed to get one 1: not found", affectedResource: "Student", responseData: suspect });
+      }
     }
+    return res
+      .status(400)
+      .json({ msg: "Failed to get one 2: params missing or malformed", affectedResource: "Student" });
   } catch (error) {
     return res.status(400).json({ msg: "Failed to get 3: bad req", affectedResource: "Student" });
   }
 };
 
-export const getAllResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
+export const getAllResource: RequestHandler<newReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
   req,
   res,
   _next
 ) => {
   try {
-    const resultClt = await Student.find();
-    return res.status(200).json({ msg: "Got All", affectedResource: "Student", responseData: resultClt });
+    const queryResult = await Student.find();
+    return res.status(200).json({ msg: "Got All", affectedResource: "Student", responseData: queryResult });
   } catch (error) {
-    return res.status(400).json({ msg: "Failed to getAll", affectedResource: "Student" });
+    return res.status(400).json({ msg: "Failed to get all 1: bad req", affectedResource: "Student" });
   }
 };
 
-export const createResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
+export const createResource: RequestHandler<newReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
+  req,
+  res,
+  _next
+) => {
+  try {
+    const { data } = req.body;
+
+    if (data && "programme" in data) {
+      const suspect = await getRepository(Student).findOne(data.id);
+      if (suspect) {
+        return res.status(400).json({ msg: "Failed to create 1: already existed", affectedResource: "Student" });
+      }
+      const tmpInstnc = getRepository(Student).create(data);
+      const queryResult = await getRepository(Student).save(tmpInstnc);
+      return res.status(201).json({ msg: "Created", affectedResource: "Student", responseData: queryResult });
+    }
+  } catch (error) {
+    return res.status(400).json({ msg: "Failed to create 2: bad req", affectedResource: "Student" });
+  }
+};
+
+// NOTE: check README
+export const updateResource: RequestHandler<newReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
   req,
   res,
   _next
@@ -47,67 +73,49 @@ export const createResource: RequestHandler<xReqParams, xResBody, xReqBody, xReq
   const { data } = req.body;
 
   try {
-    // Typeguard `in`
-    if (data && "academicYear" in data) {
-      const result = await getRepository(Student).save(data);
-      return res.status(201).json({ msg: "Created", affectedResource: "Student", responseData: result });
-    } else {
-      return res.status(400).json({ msg: "Failed to create 1: data invalid", affectedResource: "Student" });
-    }
-  } catch (error) {
-    return res.status(400).json({ msg: "Failed to create 2: bad req", affectedResource: "Student" });
-  }
-};
+    if ("studentIDHere" in req.params && data && "programme" in data) {
+      const { studentIDHere } = req.params;
 
-export const updateResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
-  req,
-  res,
-  _next
-) => {
-  const { studentIDHere } = req.params;
-  const { data } = req.body; // WARN: data must have id, FE should add it
+      const suspect = await getRepository(Student).findOne(studentIDHere);
+      if (suspect && suspect.id === data.id) {
+        const tmpInstnc = getRepository(Student).create(data);
+        const queryResult = await getRepository(Student).save(tmpInstnc);
 
-  try {
-    if (studentIDHere) {
-      if (data && "academicYear" in data) {
-        const result = await getRepository(Student).save(data);
-        return res.status(200).json({ msg: "Updated", affectedResource: "Student", responseData: result });
-      } else {
-        return res
-          .status(400)
-          .json({ msg: "Failed to update 1: body missing or malformed", affectedResource: "Student" });
+        return res.status(200).json({ msg: "Updated", affectedResource: "Student", responseData: queryResult });
       }
-    } else {
-      return res
-        .status(404)
-        .json({ msg: "Failed to update 2: params missing or malformed", affectedResource: "Student" });
+
+      return res.status(404).json({
+        msg: "Failed to update 1: not found or mismatch id between req body vs path params",
+        affectedResource: "Student"
+      });
     }
+    return res
+      .status(400)
+      .json({ msg: "Failed to update 2: check path params & req body", affectedResource: "Student" });
   } catch (error) {
-    return res.status(400).json({ msg: "Failed to updated 3: bad req", affectedResource: "Student" });
+    return res.status(400).json({ msg: "Failed to update 3: bad req", affectedResource: "Student" });
   }
 };
 
 // NOTE: what remove() returns will miss id prop
-export const deleteResource: RequestHandler<xReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
+export const deleteResource: RequestHandler<newReqParams, xResBody, xReqBody, xReqQuery, xLocals> = async (
   req,
   res,
   _next
 ) => {
-  const { studentIDHere } = req.params;
-
   try {
-    if (studentIDHere) {
-      const suspect = await getRepository(Student).findOne({ id: studentIDHere });
+    if ("studentIDHere" in req.params) {
+      const { studentIDHere } = req.params;
+      const suspect = await getRepository(Student).findOne(studentIDHere);
       if (suspect) {
-        await getRepository(Student).remove(suspect);
-        return res.status(200).json({ msg: "Deleted", affectedResource: "Student", responseData: suspect });
+        const queryResult = await getRepository(Student).remove(suspect);
+        return res.status(200).json({ msg: "Deleted", affectedResource: "Student", responseData: queryResult });
       }
       return res.status(404).json({ msg: "Failed to delete 1: not found", affectedResource: "Student" });
-    } else {
-      return res
-        .status(400)
-        .json({ msg: "Failed to delete 2: params missing or malformed", affectedResource: "Student" });
     }
+    return res
+      .status(400)
+      .json({ msg: "Failed to delete 2: params missing or malformed", affectedResource: "Student" });
   } catch (error) {
     return res.status(400).json({ msg: "Failed to delete 3: bad req", affectedResource: "Student" });
   }
